@@ -1,0 +1,46 @@
+<!doctype html>
+<html ng-app="groceryApp" lang="en">
+<head>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.5/angular.min.js"></script>
+    <script src="//cdn.firebase.com/v0/firebase.js"></script>
+    <script src="//cdn.firebase.com/v0/firebase-simple-login.js"></script>
+    <script src="//cdn.firebase.com/libs/angularfire/0.3.0/angularfire.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/app.css" rel="stylesheet" media="screen">
+    
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+</head>
+<body ng-controller="GroceryAppCtrl">
+    
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="#">Grocery List App</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container-fluid">
+        <div class="span3">
+            <div class="well sidebar-nav">
+                <ul class="nav nav-list">
+                    <li class="nav-header">Grocery Lists</li>
+                    <li ng-repeat="list in lists"><a href="#/lists/{{list.id}}">{{list.name}}</a></li>
+                    <li><a class="btn btn-mini" href="#/create">New List</a></li>
+                </ul>
+            </div>
+        </div>
+                
+        <div class="span9 offset1">
+            <div class="row-fluid">
+                <div ng-view></div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

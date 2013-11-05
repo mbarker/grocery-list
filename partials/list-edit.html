@@ -1,0 +1,16 @@
+<form>
+    <fieldset>
+        <legend>
+            <div class="row-fluid">
+                <div class="span7">{{list.id ? 'Edit' : 'Create'}} list: {{list.name}}</div>
+                <div id="saved-alert" class="span2"><div ng-show="saved">Saved...</div></div>
+                <a class="btn btn-primary span3" ng-click="done()">Done</a>
+            </div>
+        </legend>
+        
+        <div class="row-fluid">
+            <input class="span12" type="text" ng-model="list.name" ng-blur="saveList()" />
+            <textarea id="raw-text" class="span12" ng-model="list.raw" ng-keydown="parseRaw($event)" rows="20" />
+        </div>
+    </fieldset>
+</form>

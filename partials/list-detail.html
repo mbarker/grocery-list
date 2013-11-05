@@ -1,0 +1,20 @@
+<fieldset>
+    <legend>
+        <div class="row-fluid">
+            <span class="span9">{{list.name}}</span>
+            <a href="#/lists/{{list.id}}/edit" class="btn btn-primary span3" ng-show="list.id">Edit</a>
+        </div>
+    </legend>
+    
+    <div class="row-fluid" ng-repeat="group in list.groups" ng-hide="group.allDone">
+        <h4 class="span12">{{group.name}}</h4>
+        <ul class="span12 grocery-items">
+            <li ng-repeat="item in group.items" ng-hide="item.done">
+                <a class="span12" ng-click="markDone(group, item)">
+                    <i class="icon-check"></i>
+                    <span class="item-name">{{item.name}}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</fieldset>

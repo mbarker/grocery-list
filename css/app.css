@@ -1,0 +1,38 @@
+body {
+    padding-top: 60px;
+}
+
+#saved-alert {
+    text-align: center;
+    font-size: small;
+    color: #3A3;
+}
+
+#raw-text {
+    height: 60%;
+}
+
+.grocery-items {
+    border-bottom: 1px solid #ccc;
+    
+}
+
+.grocery-items li {
+    padding: 2px 4px;
+    border: 1px solid #ccc;
+    border-bottom-width: 0;
+    list-style-type: none;
+    list-style-image: none;
+    list-style-position: outside;
+    line-height: 30px;
+    height: 30px;
+    display: block;
+}
+
+.grocery-items i {
+    margin-right: 10px;
+}
+
+.item-name {
+    
+}
