@@ -1,0 +1,60 @@
+.phone-nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    display: none;
+}
+
+.nav-buttons {
+    margin-top: 4px !important;
+}
+
+#saved-alert {
+    text-align: center;
+    font-size: small;
+    color: #3A3;
+}
+
+#raw-text {
+    height: 60%;
+}
+
+.grocery-items {
+    border-bottom: 1px solid #ccc;
+    
+}
+
+.grocery-items li {
+    padding: 2px 4px;
+    border: 1px solid #ccc;
+    border-bottom-width: 0;
+    list-style-type: none;
+    list-style-image: none;
+    list-style-position: outside;
+    line-height: 30px;
+    height: 30px;
+    display: block;
+}
+
+.grocery-items a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.grocery-items li:hover {
+    background-color: #eee;
+}
+
+.grocery-items i {
+    margin-right: 10px;
+    display: none;
+}
+
+.grocery-items li:hover i {
+    display: inline-block;
+}
+
+.item-name {
+    
+}
