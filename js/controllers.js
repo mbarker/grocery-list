@@ -47,11 +47,14 @@ function ($scope, $routeParams, $location, $timeout, angularFire) {
     
     var rawChanged = false;
     $scope.saveExisting = function() {
-        if (ensureList() && $scope.list.id && rawChanged) {
-            console.log('Forcing a save');
-            reparseRaw();
-            $timeout.cancel(delaySave);
-            $scope.flashSaved();
+        if (ensureList() && $scope.list.id) {
+            if (rawChanged) {
+                console.log('Forcing a save');
+                reparseRaw();
+                $timeout.cancel(delaySave);
+                $scope.flashSaved();
+            }
+            
             $location.path('/lists/' + $scope.list.id);
         }
     };

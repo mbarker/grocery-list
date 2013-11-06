@@ -2,7 +2,7 @@
     <fieldset>
         <legend>
             <div class="row-fluid">
-                <div class="span7">{{list.id ? 'Edit' : 'Create'}} list: {{list.name}}</div>
+                <div class="span7">{{list.name}}</div>
                 <div class="span2">{{message}}</div>
                 <a class="btn btn-primary span3" ng-click="saveExisting()" ng-if="list.id">Done</a>
                 <a class="btn btn-primary span3" ng-click="createNew()" ng-if="!list.id">Done</a>
