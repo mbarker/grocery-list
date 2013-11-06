@@ -64,6 +64,14 @@ function ($scope, $routeParams, $location, $timeout, angularFire) {
         });
         
         group.allDone = allDone;
+        
+        allDone = true;
+        angular.forEach($scope.list.groups, function(group) {
+            allDone &= group.allDone;
+        });
+        
+        $scope.list.allDone = allDone;
+        console.log('New list alldone: ' + $scope.list.allDone);
     };
     
     var delaySave = null;
@@ -144,7 +152,8 @@ function list(name, groups) {
     return {
         id: null,
         name: name || 'New Grocery List',
-        groups: groups || []
+        groups: groups || [],
+        allDone: false
     };
 }
 
