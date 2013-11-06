@@ -1,5 +1,13 @@
-body {
-    padding-top: 60px;
+.phone-nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    display: none;
+}
+
+.nav-buttons {
+    margin-top: 4px !important;
 }
 
 #saved-alert {
@@ -29,8 +37,22 @@ body {
     display: block;
 }
 
+.grocery-items a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.grocery-items li:hover {
+    background-color: #eee;
+}
+
 .grocery-items i {
     margin-right: 10px;
+    display: none;
+}
+
+.grocery-items li:hover i {
+    display: inline-block;
 }
 
 .item-name {

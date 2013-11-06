@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
     <link href="css/app.css" rel="stylesheet" media="screen">
     
     <script src="js/bootstrap.min.js"></script>
@@ -15,17 +16,31 @@
     <script src="js/controllers.js"></script>
 </head>
 <body ng-controller="GroceryAppCtrl">
-    
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="brand" href="#">Grocery List App</a>
+    <div class="container-fluid">
+        <div class="navbar navbar-inverse hidden-phone">
+            <div class="navbar-inner">
+                <div class="brand">Grocery List App</div>
             </div>
         </div>
-    </div>
-    
-    <div class="container-fluid">
-        <div class="span3">
+        <div class="navbar navbar-inverse navbar-fixed-top visible-phone">
+            <div class="navbar-inner">
+                <ul class="nav nav-buttons">
+                    <li><button class="btn btn-mini" ng-click="toggleMenu()"><i class="icon-list"></i></button></li>
+                </ul>
+                <div class="brand">Grocery List App</div>
+            </div>
+        </div>
+        
+        <div class="well sidebar-nav phone-nav" ng-class="{'visible-phone': showMenu}">
+            <button type="button" class="close" ng-click="toggleMenu()">&times;</button>
+            <ul class="nav nav-list">
+                <li class="nav-header">Grocery Lists</li>
+                <li ng-repeat="list in lists"><a href="#/lists/{{list.id}}" ng-click="toggleMenu()">{{list.name}}</a></li>
+                <li><a class="btn btn-mini" href="#/create" ng-click="toggleMenu()">New List</a></li>
+            </ul>
+        </div>
+        
+        <div class="span3 hidden-phone">
             <div class="well sidebar-nav">
                 <ul class="nav nav-list">
                     <li class="nav-header">Grocery Lists</li>
@@ -35,12 +50,11 @@
             </div>
         </div>
                 
-        <div class="span9 offset1">
-            <div class="row-fluid">
+        <div class="span8">
+            <div class="container-fluid">
                 <div ng-view></div>
             </div>
         </div>
-    </div>
-    
+    </div> 
 </body>
 </html>

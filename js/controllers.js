@@ -13,51 +13,45 @@ function ($scope, angularFire) {
     // Bind all of the lists
     $scope.lists = [];
     angularFire(listsRef, $scope, 'lists');
+    
+    $scope.showMenu = false;
+    $scope.toggleMenu = function() {
+        $scope.showMenu = !$scope.showMenu;
+        console.log('Show menu: ' + $scope.showMenu);
+    };
+    
+    
 }]);
 
-groceryAppControllers.controller('GroceryListCtrl', ['$scope', '$routeParams', '$location', 'angularFire',
-function ($scope, $routeParams, $location, angularFire) {
+groceryAppControllers.controller('GroceryListCtrl', ['$scope', '$routeParams', '$location', '$timeout', 'angularFire',
+function ($scope, $routeParams, $location, $timeout, angularFire) {
     
-    var currentListRef = null;
-    var delaySave = null;
-    var clearSavedMessage = null;
     $scope.list = null;
     $scope.saved = false;
     if ($routeParams.listId) {
-        currentListRef = listsRef.child($routeParams.listId);
-        angularFire(currentListRef, $scope, 'list');
+        bindList($routeParams.listId);
     } else {
         $scope.list = list();
     }    
     
-    $scope.saveList = function() {
-        if (ensureList()) {
-            if (!currentListRef) {
-                console.log('New list');
-                $scope.list.id = generateId();
-                currentListRef = listsRef.child($scope.list.id);
-            }
-            
-            currentListRef.set($scope.list);
-            console.log('Saved!');
-            var savedAlert = document.getElementById('saved-alert');
-            if (clearSavedMessage) {
-                clearTimeout(clearSavedMessage);
-            }
-            
-            clearSavedMessage = setTimeout(function() {
-                $scope.saved = false;
-                $scope.$apply();
-            }, FLASH_TIME);
-            
-            $scope.saved = true;
-            $scope.$apply();
+    $scope.createNew = function() {
+        if (ensureList() && !$scope.list.id) {
+            console.log('Creating a new list');
+            $scope.list.id = generateId();
+            reparseRaw();
+            bindList($scope.list.id);
+            $scope.flashSaved();
+            $location.path('/lists/' + $scope.list.id);
         }
     };
     
-    $scope.done = function() {
-        if (ensureList()) {
-            $scope.saveList();
+    var rawChanged = false;
+    $scope.saveExisting = function() {
+        if (ensureList() && $scope.list.id && rawChanged) {
+            console.log('Forcing a save');
+            reparseRaw();
+            $timeout.cancel(delaySave);
+            $scope.flashSaved();
             $location.path('/lists/' + $scope.list.id);
         }
     };
@@ -70,52 +64,71 @@ function ($scope, $routeParams, $location, angularFire) {
         });
         
         group.allDone = allDone;
-        $scope.saveList();
     };
     
+    var delaySave = null;
     $scope.parseRaw = function(e) {
+        if (ensureList() && $scope.list.id) { 
+            console.log('Raw changed');
+            rawChanged = true;
+            $timeout.cancel(delaySave);
+            delaySave = $timeout(reparseRaw, DELAY_SAVE_TIME);
+        }
+    };
+    
+    var delayMessage = null;
+    $scope.flashSaved = function() {
+        if (ensureList() && $scope.list.id) {
+            console.log('Saved!');
+            $scope.message = 'Saved';
+            
+            $timeout.cancel(delayMessage);
+            delayMessage = $timeout(function() {
+                $scope.message = '';
+            }, FLASH_TIME);
+        }
+    };
+    
+    function reparseRaw() {
         if (!ensureList()) {
             return;
         }
         
-        // TODO: Use $timeout
-        if (delaySave) {
-            console.log('Delaying parsing');
-            clearTimeout(delaySave);
-        }
-        
-        delaySave = setTimeout(function() {
-            console.log('Updating the current list');
-            var lines = $scope.list.raw.split(/[\n\r]+/);
-            var groups = [];
-            var lastGroup = null;
-            for (var i = 0; i < lines.length; i++) {
-                var line = lines[i];
-                console.log("Line: '" + line + "'");
-                console.log(line);
-                var m = /^\s*[\-\=\*\~]\s*(.+)\s*$/g.exec(line);
-                console.log("Item regex match: " + m);
-                if (m && m[1].length > 0) {
-                    if (!lastGroup) {
-                        lastGroup = group('');
-                        groups.push(lastGroup);
-                    }
-                    
-                    lastGroup.items.push(item(m[1]));
-                } else {
-                    m = /^\s*(.+)\s*$/g.exec(line);
-                    console.log("Group regex match: " + m);
-                    if (m && m[1].length > 0) {
-                        lastGroup = group(m[1]);
-                        groups.push(lastGroup);
-                    }
+        console.log('Updating the current list');
+        var lines = $scope.list.raw.split(/[\n\r]+/);
+        var lastGroup = null;
+        $scope.list.groups.splice(0, $scope.list.groups.length);
+        angular.forEach(lines, function(line, i) {
+            var line = lines[i];
+            console.log("Line: '" + line + "'");
+            console.log(line);
+            var m = /^\s*[\-\=\*\~]\s*(.+)\s*$/g.exec(line);
+            console.log("Item regex match: " + m);
+            if (m && m[1].length > 0) {
+                if (!lastGroup) {
+                    lastGroup = group('');
+                    $scope.list.groups.push(lastGroup);
                 }
-            }
-            
-            $scope.list.groups = groups;
-            $scope.saveList();
-        }, DELAY_SAVE_TIME);
-    };
+                
+                lastGroup.items.push(item(m[1]));
+            } else {
+                m = /^\s*(.+)\s*$/g.exec(line);
+                console.log("Group regex match: " + m);
+                if (m && m[1].length > 0) {
+                    lastGroup = group(m[1]);
+                    $scope.list.groups.push(lastGroup);
+                }
+            }                
+        });
+        
+        $scope.flashSaved();
+    }
+    
+    function bindList(listId) {
+        var currentListRef = listsRef.child(listId);
+        angularFire(currentListRef, $scope, 'list');
+        rawChanged = false;
+    }
     
     function ensureList() {
         if (!$scope.list) {
